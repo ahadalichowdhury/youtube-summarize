@@ -119,4 +119,5 @@ def summarize():
         return jsonify({"error": "No transcript found for the provided URL."}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')  # Set host to '0.0.0.0' for external access
+
