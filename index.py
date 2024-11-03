@@ -24,6 +24,7 @@ def get_youtube_transcript(youtube_url):
     # Set up the Chrome driver
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # Run in headless mode (optional)
+    options.binary_location = "/usr/bin/google-chrome"  # Adjust this if your path is different it only use for deployment
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     try:
