@@ -26,7 +26,7 @@ def get_youtube_transcript(youtube_url):
 
     # Connect to the Selenium server running in Docker
     driver = Remote(
-        command_executor='http://localhost:4444/wd/hub',  # URL of the Selenium server
+        command_executor='http://18.204.15.156:4444/wd/hub',  # URL of the Selenium server
         options=options
     )
 
