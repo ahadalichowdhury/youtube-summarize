@@ -23,7 +23,7 @@ CORS(app)
 def get_youtube_transcript(youtube_url):
     # Set up the Chrome driver
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # Run in headless mode (optional)
+    # options.add_argument("--headless")  # Run in headless mode (optional)
     #those for aws ec2 instance
     options.binary_location = "/usr/bin/google-chrome"  # Adjust this if your path is different it only use for deployment
     options.add_argument("--no-sandbox")  # Bypass OS security model
