@@ -24,12 +24,18 @@ def get_youtube_transcript(youtube_url):
     # Set up the Chrome driver
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # Run in headless mode (optional)
+    #those for aws ec2 instance
     options.binary_location = "/usr/bin/google-chrome"  # Adjust this if your path is different it only use for deployment
+    options.add_argument("--no-sandbox")  # Bypass OS security model
+    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+    options.add_argument("--remote-debugging-port=9222")  # Optional: Debugging port
+    options.add_argument("--disable-gpu")
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     try:
         # Navigate to the YouTube video URL
         driver.get(youtube_url)
+        
 
         # Allow time for the page to load completely
         time.sleep(5)
