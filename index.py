@@ -98,6 +98,10 @@ def summarize_transcript(transcript):
     summary = response['choices'][0]['message']['content']
     return summary
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({"message": "Welcome to the YouTube Summarizer API"}), 200
+
 @app.route('/summarize', methods=['POST'])
 def summarize():
     data = request.get_json()
