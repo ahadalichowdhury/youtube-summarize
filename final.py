@@ -1,6 +1,7 @@
 import time
 import openai
 from flask import Flask, request, jsonify
+from selenium import webdriver  # Import webdriver
 from selenium.webdriver import Remote
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
@@ -21,7 +22,7 @@ CORS(app)
 
 def get_youtube_transcript(youtube_url):
     # Set up the Chrome driver to connect to Selenium server
-    options = webdriver.ChromeOptions()
+    options = webdriver.ChromeOptions()  # Now this will work
     options.add_argument("--headless")  # Run in headless mode (optional)
 
     # Connect to the Selenium server running in Docker
