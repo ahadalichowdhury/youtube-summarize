@@ -62,7 +62,7 @@
     <script>
         const fetchSummaryData = async (videoUrl) => {
             try {
-                const response = await fetch('http://yt-summarizer.ahadalichowdhury.online/summarize', {
+                const response = await fetch('http://yt-summarizer.ahadalichowdhury.online:5000/summarize', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
