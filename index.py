@@ -22,9 +22,10 @@ CORS(app)
 
 def get_youtube_transcript(youtube_url):
     print("Initializing Chrome WebDriver")
-    
+
+    # Setting up Chrome options
     options = Options()
-    options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
+    options.binary_location = os.getenv("GOOGLE_CHROME_BIN")  # Path to Chrome binary
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
@@ -33,17 +34,17 @@ def get_youtube_transcript(youtube_url):
     options.add_argument("--remote-debugging-port=9222")
 
     # Create a service object using the path to ChromeDriver
-    chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
+    chromedriver_path = os.getenv("CHROMEDRIVER_PATH")  # Ensure this is set correctly
     if not chromedriver_path:
         print("Error: CHROMEDRIVER_PATH is not set.")
         return None
 
     service = ChromeService(executable_path=chromedriver_path)
 
-    # Pass the service and options to the WebDriver
-    driver = webdriver.Chrome(service=service, options=options)
-
+    # Initialize the WebDriver
     try:
+        driver = webdriver.Chrome(service=service, options=options)
+
         print("Navigating to YouTube URL:", youtube_url)
         driver.get(youtube_url)
         time.sleep(5)  # Allow time for the page to load completely
@@ -92,10 +93,9 @@ def get_youtube_transcript(youtube_url):
 
         return transcript
 
-    finally:
-        driver.quit()
-        print("Driver session ended.")
-
+    except Exception as e:
+        print("An error occurred while initializing the WebDriver:", e)
+        return None
 def summarize_transcript(transcript):
     # Join the transcript lines into a single string
     transcript_text = "\n".join(transcript)
