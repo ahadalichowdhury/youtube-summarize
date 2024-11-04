@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from flask_cors import CORS  # Import CORS
 from dotenv import load_dotenv
 import os  # Import os to access environment variables
+from selenium.webdriver.chrome.options import Options
 
 # Load environment variables from .env file
 load_dotenv()
@@ -20,22 +21,80 @@ app = Flask(__name__)
 CORS(app)
 
 def get_youtube_transcript(youtube_url):
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Ensure headless mode
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-
-    # Specify the path to the ChromeDriver executable
-    service = Service(executable_path='/app/.chromedriver/bin/chromedriver')
-
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-    driver.get(youtube_url)
-
-    # Add your code to extract the transcript from the page here
-    transcript = "Dummy transcript from YouTube video."
+    print("Initializing Chrome WebDriver")
     
-    driver.quit()
-    return transcript
+    options = Options()
+    options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--remote-debugging-port=9222")
+
+    # Create a service object using the path to ChromeDriver
+    chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
+    if not chromedriver_path:
+        print("Error: CHROMEDRIVER_PATH is not set.")
+        return None
+
+    service = ChromeService(executable_path=chromedriver_path)
+
+    # Pass the service and options to the WebDriver
+    driver = webdriver.Chrome(service=service, options=options)
+
+    try:
+        print("Navigating to YouTube URL:", youtube_url)
+        driver.get(youtube_url)
+        time.sleep(5)  # Allow time for the page to load completely
+        print("Page loaded. Page source length:", len(driver.page_source))
+
+        # Click the 'More' button to expand the description
+        try:
+            print("Attempting to click 'More' button...")
+            more_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//tp-yt-paper-button[@id="expand"]'))
+            )
+            more_button.click()
+            print("'More' button clicked successfully.")
+            time.sleep(2)  # Wait for the description to expand
+        except Exception as e:
+            print("Error clicking 'More' button:", e)
+            return None
+
+        # Click the 'Show transcript' button
+        try:
+            print("Attempting to click 'Show transcript' button...")
+            transcript_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[contains(@aria-label, "Show transcript")]'))
+            )
+            transcript_button.click()
+            time.sleep(5)  # Wait for the transcript to load
+            print("'Show transcript' button clicked successfully.")
+        except Exception as e:
+            print("Error clicking 'Show transcript' button:", e)
+            return None
+
+        # Attempt to retrieve the transcript text
+        try:
+            transcript_elements = WebDriverWait(driver, 10).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'yt-formatted-string.segment-text'))
+            )
+            transcript = [element.text for element in transcript_elements]
+            if not transcript:
+                print("No transcript found in the retrieved elements.")
+                return None
+            else:
+                print("Transcript retrieved successfully.")
+        except Exception as e:
+            print("Could not retrieve transcript text:", e)
+            return None
+
+        return transcript
+
+    finally:
+        driver.quit()
+        print("Driver session ended.")
 
 def summarize_transcript(transcript):
     # Join the transcript lines into a single string
