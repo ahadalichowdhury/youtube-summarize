@@ -30,7 +30,7 @@ def get_youtube_transcript(youtube_url):
     options.add_argument("--disable-software-rasterizer")
     options.add_argument("--remote-debugging-port=9222")
 
-    driver = webdriver.Chrome(executable_path=os.getenv("CHROMEDRIVER_PATH"), options=options)
+    driver = webdriver.Chrome(os.getenv("CHROMEDRIVER_PATH"), options=options)
 
     try:
         print("Navigating to YouTube URL:", youtube_url)
