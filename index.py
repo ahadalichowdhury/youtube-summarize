@@ -1,6 +1,7 @@
 import time
 import openai
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
 from flask import Flask, request, jsonify
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -30,8 +31,16 @@ def get_youtube_transcript(youtube_url):
     options.add_argument("--disable-software-rasterizer")
     options.add_argument("--remote-debugging-port=9222")
 
-    # Pass options correctly when creating the WebDriver instance
-    driver = webdriver.Chrome(os.getenv("CHROMEDRIVER_PATH"), options=options)
+    # Create a service object using the path to ChromeDriver
+    chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
+    if not chromedriver_path:
+        print("Error: CHROMEDRIVER_PATH is not set.")
+        return None
+
+    service = ChromeService(executable_path=chromedriver_path)
+
+    # Pass the service and options to the WebDriver
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         print("Navigating to YouTube URL:", youtube_url)
