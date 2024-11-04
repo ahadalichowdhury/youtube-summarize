@@ -1,6 +1,8 @@
-Flask==2.2.3
+Flask==3.0.3
+Werkzeug>=2.3.7
+openai==0.28.0
 Flask-Cors==3.0.10
-selenium==4.20.0
-webdriver-manager==3.8.5
-openai==0.27.0
-python-dotenv==1.0.0
+selenium==4.24.0
+webdriver-manager==4.0.2
+python-dotenv==1.0.1
+gunicorn==21.2.0

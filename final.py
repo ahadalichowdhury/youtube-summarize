@@ -1,15 +1,16 @@
 import time
 import openai
 from flask import Flask, request, jsonify
-from selenium import webdriver  # Import webdriver
-from selenium.webdriver import Remote
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from flask_cors import CORS
+from webdriver_manager.chrome import ChromeDriverManager
+from flask_cors import CORS  # Import CORS
+# Set your OpenAI API key
 from dotenv import load_dotenv
-import os
+import os  # Import os to access environment variables
 
 # Load environment variables from .env file
 load_dotenv()
@@ -19,18 +20,17 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 app = Flask(__name__)
 CORS(app)
-
 def get_youtube_transcript(youtube_url):
-    # Set up the Chrome driver to connect to Selenium server
-    options = webdriver.ChromeOptions()  # Now this will work
+    # Set up the Chrome driver
+    options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # Run in headless mode (optional)
-
-    # Connect to the Selenium server running in Docker
-    driver = Remote(
-        command_executor='http://18.204.15.156:4444/wd/hub',  # URL of the Selenium server
-        options=options
-    )
-
+    #those for aws ec2 instance
+    # options.binary_location = "/usr/bin/google-chrome"  # Adjust this if your path is different it only use for deployment
+    options.add_argument("--no-sandbox")  # Bypass OS security model
+    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+    options.add_argument("--remote-debugging-port=9222")  # Optional: Debugging port
+    options.add_argument("--disable-gpu")
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
     try:
         # Navigate to the YouTube video URL
         driver.get(youtube_url)
