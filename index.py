@@ -1,14 +1,13 @@
 import time
 import openai
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 from flask import Flask, request, jsonify
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 from flask_cors import CORS  # Import CORS
-# Set your OpenAI API key
 from dotenv import load_dotenv
 import os  # Import os to access environment variables
 
@@ -20,24 +19,23 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 app = Flask(__name__)
 CORS(app)
+
 def get_youtube_transcript(youtube_url):
     # Set up the Chrome driver
     options = webdriver.ChromeOptions()
-    options.binary_location = "/app/.apt/usr/bin/google-chrome"  # Adjust this for Heroku
     options.add_argument("--headless")  # Run in headless mode (optional)
-    #those for aws ec2 instance
-    # options.binary_location = "/usr/bin/google-chrome"  # Adjust this if your path is different it only use for deployment
     options.add_argument("--no-sandbox")  # Bypass OS security model
     options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
     options.add_argument("--remote-debugging-port=9222")  # Optional: Debugging port
     options.add_argument("--disable-gpu")
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    options.add_argument("window-size=1400,1500")
 
+    # Use ChromeService to specify the path to the driver
+    driver = webdriver.Chrome(options=options)
     try:
         # Navigate to the YouTube video URL
         driver.get(youtube_url)
         
-
         # Allow time for the page to load completely
         time.sleep(5)
 
@@ -96,7 +94,6 @@ def summarize_transcript(transcript):
                 "content": (
                     f"Make sure to explain the key points clearly and include relevant details."
                     f"in transcript speaker can talk about anything.Any how if you realize that, speaker talk about any code or command, you give this with completed version with proper explanation,You will respond in clean, proper HTML so the application can render it straight away. Normal text will be wrapped in a <p> tag. You will format the links as html links with an <a> tag. Links will have yellow font. Use divs and headings to properly separate different sections. Make sure text doesn't overlap and there is adequate line spacing. You will only output pure HTML. No markdown. All answers, titles, lists, headers, paragraphs - reply in fully styled HTML as the app will render and parse your responses as you reply. Only if you are asked about some programming problem that requirs to send a code, you will use dark background and white font for that code. Don't use ```html at the start and do not end with ```. Do not output any text afterwards. Here’s the transcript: \n\n{transcript_text}\n\n,"
-                    
                 )
             }
         ]
@@ -129,4 +126,3 @@ def summarize():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
