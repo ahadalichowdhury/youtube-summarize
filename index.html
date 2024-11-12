@@ -62,7 +62,7 @@
     <script>
         const fetchSummaryData = async (videoUrl) => {
             try {
-                const response = await fetch('https://yt-summarizer.ahadalichowdhury.online/summarize', {
+                const response = await fetch('https://cors-anywhere.herokuapp.com/https://yt-summarizer.ahadalichowdhury.online/summarize', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
