@@ -45,7 +45,7 @@ def get_youtube_transcript(youtube_url):
                 EC.element_to_be_clickable((By.XPATH, '//tp-yt-paper-button[@id="expand"]'))
             )
             more_button.click()
-            time.sleep(2)  # Wait for the description to expand
+            time.sleep(5)  # Wait for the description to expand
         except Exception as e:
             print("Could not find or click the 'More' button:", e)
             return None
