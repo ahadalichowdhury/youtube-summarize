@@ -1,143 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Summary Display</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-        }
-        h1, h2, h3 {
-            color: #333;
-        }
-        pre {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            overflow: auto;
-            border-radius: 5px;
-        }
-        p {
-            margin: 10px 0;
-        }
-        button {
-            margin-bottom: 20px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:disabled {
-            background-color: #888;
-            cursor: not-allowed;
-        }
-        button:hover:enabled {
-            background-color: #45a049;
-        }
-        #loading, #timeout-message {
-            display: none;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #ff4500;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        line-height: 1.6;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #333;
+      }
+      pre {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        overflow: auto;
+        border-radius: 5px;
+      }
+      p {
+        margin: 10px 0;
+      }
+      button {
+        margin-bottom: 20px;
+        padding: 10px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:disabled {
+        background-color: #888;
+        cursor: not-allowed;
+      }
+      button:hover:enabled {
+        background-color: #45a049;
+      }
+      #loading,
+      #timeout-message {
+        display: none;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: #ff4500;
+      }
     </style>
-</head>
-<body>
-
-    <h1 style="text-align: center;">YouTube Summary</h1>
-    <input type="text" id="video-url" placeholder="Enter YouTube video URL" style="width: 80%; padding: 8px; margin-bottom: 20px;">
+  </head>
+  <body>
+    <h1 style="text-align: center">YouTube Summary</h1>
+    <input
+      type="text"
+      id="video-url"
+      placeholder="Enter YouTube video URL"
+      style="width: 80%; padding: 8px; margin-bottom: 20px"
+    />
     <button id="fetch-summary-button">Fetch Summary</button>
-    <button id="copy-button" style="display: none;">Copy Summary</button>
+    <button id="copy-button" style="display: none">Copy Summary</button>
     <div id="loading">Loading summary...</div>
     <div id="timeout-message">Don't be upset! The summary is processing...</div>
     <div id="summary-container"></div>
-    
-    <textarea id="copy-textarea" style="position: absolute; left: -9999px;"></textarea>
+
+    <textarea
+      id="copy-textarea"
+      style="position: absolute; left: -9999px"
+    ></textarea>
 
     <script>
-        const fetchSummaryData = async (videoUrl) => {
-            try {
-                const response = await fetch('https://cors-anywhere.herokuapp.com/https://yt-summarizer.ahadalichowdhury.online/summarize', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ url: videoUrl })
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const summaryObject = await response.json();
-                return summaryObject;
-            } catch (error) {
-                console.error('There has been a problem with your fetch operation:', error);
+      const fetchSummaryData = async (videoUrl) => {
+        try {
+          const response = await fetch(
+            "http://y0s0c4sw00w4w4owoggk0k8w.160.191.163.32.sslip.io/summarize",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ url: videoUrl }),
             }
-        };
+          );
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const summaryObject = await response.json();
+          return summaryObject;
+        } catch (error) {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        }
+      };
 
-        const displaySummary = async () => {
-            const videoUrl = document.getElementById('video-url').value;
-            const fetchButton = document.getElementById('fetch-summary-button'); // Fetch button
-            const loadingIndicator = document.getElementById('loading');
-            const timeoutMessage = document.getElementById('timeout-message');
-            const copyButton = document.getElementById('copy-button');
+      const displaySummary = async () => {
+        const videoUrl = document.getElementById("video-url").value;
+        const fetchButton = document.getElementById("fetch-summary-button"); // Fetch button
+        const loadingIndicator = document.getElementById("loading");
+        const timeoutMessage = document.getElementById("timeout-message");
+        const copyButton = document.getElementById("copy-button");
 
-            if (!videoUrl) {
-                alert("Please enter a YouTube video URL.");
-                return;
-            }
+        if (!videoUrl) {
+          alert("Please enter a YouTube video URL.");
+          return;
+        }
 
-            fetchButton.disabled = true; // Disable the button
-            loadingIndicator.style.display = 'block';
-            timeoutMessage.style.display = 'none';
-            copyButton.style.display = 'none';
+        fetchButton.disabled = true; // Disable the button
+        loadingIndicator.style.display = "block";
+        timeoutMessage.style.display = "none";
+        copyButton.style.display = "none";
 
-            const timeoutId = setTimeout(() => {
-                loadingIndicator.style.display = 'none'; // Hide loading text
-                timeoutMessage.style.display = 'block'; // Show "Don't be upset" message
-            }, 5000);
+        const timeoutId = setTimeout(() => {
+          loadingIndicator.style.display = "none"; // Hide loading text
+          timeoutMessage.style.display = "block"; // Show "Don't be upset" message
+        }, 5000);
 
-            const summaryData = await fetchSummaryData(videoUrl);
-            
-            loadingIndicator.style.display = 'none';
-            clearTimeout(timeoutId);
-            timeoutMessage.style.display = 'none';
-            fetchButton.disabled = false; // Re-enable the button
+        const summaryData = await fetchSummaryData(videoUrl);
 
-            if (summaryData && summaryData.summary) {
-                document.getElementById('summary-container').innerHTML = summaryData.summary;
-                copyButton.style.display = 'inline-block';
-            } else {
-                document.getElementById('summary-container').innerHTML = '<p>Error: Summary data not found.</p>';
-            }
-        };
+        loadingIndicator.style.display = "none";
+        clearTimeout(timeoutId);
+        timeoutMessage.style.display = "none";
+        fetchButton.disabled = false; // Re-enable the button
 
-        const copySummary = () => {
-            const summaryText = document.getElementById('summary-container').innerText;
-            const copyTextarea = document.getElementById('copy-textarea');
+        if (summaryData && summaryData.summary) {
+          document.getElementById("summary-container").innerHTML =
+            summaryData.summary;
+          copyButton.style.display = "inline-block";
+        } else {
+          document.getElementById("summary-container").innerHTML =
+            "<p>Error: Summary data not found.</p>";
+        }
+      };
 
-            copyTextarea.value = summaryText;
-            copyTextarea.select();
-            document.execCommand('copy');
-            alert('Summary copied to clipboard!');
-        };
+      const copySummary = () => {
+        const summaryText =
+          document.getElementById("summary-container").innerText;
+        const copyTextarea = document.getElementById("copy-textarea");
 
-        // Event listener for the Fetch Summary button
-        document.getElementById('fetch-summary-button').addEventListener('click', displaySummary);
+        copyTextarea.value = summaryText;
+        copyTextarea.select();
+        document.execCommand("copy");
+        alert("Summary copied to clipboard!");
+      };
 
-        // Event listener for pressing Enter key in the input field
-        document.getElementById('video-url').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                displaySummary();
-            }
+      // Event listener for the Fetch Summary button
+      document
+        .getElementById("fetch-summary-button")
+        .addEventListener("click", displaySummary);
+
+      // Event listener for pressing Enter key in the input field
+      document
+        .getElementById("video-url")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            displaySummary();
+          }
         });
 
-        document.getElementById('copy-button').addEventListener('click', copySummary);
+      document
+        .getElementById("copy-button")
+        .addEventListener("click", copySummary);
     </script>
-
-</body>
+  </body>
 </html>
