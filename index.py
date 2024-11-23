@@ -21,17 +21,17 @@ app = Flask(__name__)
 CORS(app)
 
 def get_youtube_transcript(youtube_url):
-    # Set up the Chrome driver
+     # Set up the Chrome driver options
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # Run in headless mode (optional)
+    options.add_argument("--headless")  # Run in headless mode
     options.add_argument("--no-sandbox")  # Bypass OS security model
     options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
     options.add_argument("--remote-debugging-port=9222")  # Optional: Debugging port
     options.add_argument("--disable-gpu")
     options.add_argument("window-size=1400,1500")
 
-    # Use ChromeService to specify the path to the driver
-    driver = webdriver.Chrome(options=options)
+    # Use ChromeService with an explicit path to ChromeDriver
+    driver = webdriver.Chrome(service=ChromeService("/usr/bin/chromedriver"), options=options)
     try:
         # Navigate to the YouTube video URL
         driver.get(youtube_url)
