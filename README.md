@@ -32,7 +32,7 @@ Before running this project, make sure you have:
 
 1. Clone the repository:
 ```bash
-git clone [your-repository-url]
+git clone https://github.com/ahadalichowdhury/youtube-summarize.git
 cd youtube-summary-api
 ```
 
@@ -83,7 +83,7 @@ Feel free to fork this repository and submit pull requests. For major changes, p
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+[MIT License](LICENSE)
 
 ## Acknowledgments
 
